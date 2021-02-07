@@ -1,20 +1,46 @@
-ARG BUILD_FROM
-FROM $BUILD_FROM
+ARG BUILD_FROM=ghcr.io/hassio-addons/debian-base/amd64:4.0.0
+###############################################################################
+# Get prebuild containers from Heimdall
+###############################################################################
+FROM "ghcr.io/linuxserver/heimdall" as heimdall
 
-ENV LANG C.UTF-8
+###############################################################################
+# Build the actual add-on.
+###############################################################################
+# hadolint ignore=DL3006
+FROM ${BUILD_FROM}
 
-# Copy script
+# Set shell
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+# Copy root filesystem
 COPY rootfs /
 
-# Setup base
+# Build arguments
 ARG BUILD_ARCH
-ARG CLI_VERSION
-RUN \
-    curl -Lso /usr/bin/ha "https://github.com/home-assistant/cli/releases/download/${CLI_VERSION}/ha_${BUILD_ARCH}" \
-    && chmod a+x /usr/bin/ha \
-    && apk add --no-cache \
-        samba-client \
-    && chmod a+x /run.sh
+ARG BUILD_DATE
+ARG BUILD_DESCRIPTION
+ARG BUILD_NAME
+ARG BUILD_REF
+ARG BUILD_REPOSITORY
+ARG BUILD_VERSION
 
-# Run script
-CMD [ "/run.sh" ]
+# Labels
+LABEL \
+    io.hass.name="${BUILD_NAME}" \
+    io.hass.description="${BUILD_DESCRIPTION}" \
+    io.hass.arch="${BUILD_ARCH}" \
+    io.hass.type="addon" \
+    io.hass.version=${BUILD_VERSION} \
+    maintainer="Alex" \
+    org.opencontainers.image.title="${BUILD_NAME}" \
+    org.opencontainers.image.description="${BUILD_DESCRIPTION}" \
+    org.opencontainers.image.vendor="Home Assistant Community Add-ons" \
+    org.opencontainers.image.authors="Alex" \
+    org.opencontainers.image.licenses="MIT" \
+    org.opencontainers.image.url="https://addons.community" \
+    org.opencontainers.image.source="https://github.com/${BUILD_REPOSITORY}" \
+    org.opencontainers.image.documentation="https://github.com/${BUILD_REPOSITORY}/blob/main/README.md" \
+    org.opencontainers.image.created=${BUILD_DATE} \
+    org.opencontainers.image.revision=${BUILD_REF} \
+    org.opencontainers.image.version=${BUILD_VERSION}
