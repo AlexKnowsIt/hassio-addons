@@ -1,4 +1,4 @@
-# Tom's Home Assistant Add-ons
+# Alex's Home Assistant Add-ons
 
 This repository contains my personal add-ons for Home Assistant. Feel free to install and use the add-ons if you find them useful.
 
@@ -10,4 +10,4 @@ https://github.com/thomasmauerer/hassio-addons
 ```
 
 ## Add-ons in this repository
- - **[Samba Backup](/samba-backup/README.md)**: Create snapshots and store them on a Samba share.
+ - **[Heimdall](/samba-backup/README.md)**: Create snapshots and store them on a Samba share.
